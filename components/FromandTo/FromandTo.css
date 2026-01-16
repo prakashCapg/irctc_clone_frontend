@@ -1,0 +1,32 @@
+.fromandto {
+  display: flex;
+  gap: 0.3em;
+  align-items: center;
+}
+
+.fromandto > div {
+  flex-grow: 1;
+}
+
+.fromandtoswap {
+  background-color: #f0f7fa;
+  border-radius: 50%;
+  width: 1.6em;
+  height: 1.5em;
+  cursor: pointer;
+  position: relative;
+}
+
+.arrow-right {
+  position: absolute;
+  top: 45.5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.arrow-left {
+  position: absolute;
+  top: 51.5%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(180deg);
+}
