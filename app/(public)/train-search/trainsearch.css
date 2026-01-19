@@ -1,0 +1,61 @@
+.trainsearchcard {
+  background-color: white;
+  box-shadow: 0px 8px 8px 2px rgba(33, 61, 119, 5);
+  width: 46.8%;
+  margin-left: 1.69em;
+  padding: 1.5em;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1em;
+}
+
+.book-ticket-heading {
+  color: rgb(33, 61, 119);
+  display: flex;
+  justify-content: center;
+}
+
+.book-ticket-heading h1 {
+  font-size: 1.89em;
+  margin-top: 0;
+  margin-bottom: 0.65em;
+}
+
+.date-dropdown {
+  display: flex;
+  gap: 2.15em;
+}
+
+.date-dropdown .dropdown-header,
+.dropdown {
+  width: 100%;
+}
+
+.date-dropdown .date-input,
+.dropdown-header {
+  border-radius: 4px;
+}
+
+.date-dropdown .date-input-container {
+  width: 100%;
+  display: block;
+}
+
+.Form-submit {
+  display: flex;
+  justify-content: center;
+  padding: 0.937em;
+}
+
+.Form-submit > button {
+  border-radius: 0.4em;
+  padding: 0.69em 2.25em;
+  font-weight: bold;
+  font-size: 0.89em;
+  background-color: #fb792b;
+}
+
+.Form-submit > button:hover {
+  box-shadow: 0 0 0 0.05em #fb792b !important;
+  border-color: #fb792b !important;
+}
