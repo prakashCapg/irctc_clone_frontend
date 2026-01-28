@@ -1,14 +1,47 @@
+.train-card,
+.train-card * {
+  box-sizing: border-box;
+  font-family: var(--irctc-font) !important;
+}
+
+.train-card__name {
+  font-weight: 800 !important;
+}
+
+.time--strong {
+  font-weight: 800 !important;
+}
+
+.station {
+  font-weight: 600 !important;
+}
+
+.status {
+  font-weight: 700 !important;
+}
+
+.availability-tab {
+  font-weight: 800 !important;
+}
+
+.train-card__actions button {
+  font-weight: 700 !important;
+}
+
 .train-card .muted {
   color: black;
   font-weight: 500;
 }
+
 .train-card .link {
   text-decoration: none;
   font-weight: 700;
 }
+
 .train-card .link:hover {
   text-decoration: underline;
 }
+
 .train-card .pipe {
   color: #111827;
 }
@@ -17,8 +50,10 @@
   background: #fff;
   color: #111827;
   padding: 0px;
+  width: 100%;
 }
 
+/* Top Bar */
 .train-card__topbar {
   display: flex;
   justify-content: space-between;
@@ -33,8 +68,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  justify-self: start;
 }
+
 .train-card__corner {
   position: absolute;
   top: -9px;
@@ -44,6 +79,7 @@
   border-top: 18px solid #c084fc;
   border-right: 18px solid transparent;
 }
+
 .train-card__name {
   margin: 0;
   font-size: 20px;
@@ -55,9 +91,9 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  justify-self: center;
   white-space: nowrap;
 }
+
 .train-card__runs-on {
   display: inline-flex;
   gap: 10px;
@@ -65,6 +101,7 @@
   padding: 0;
   margin: 0;
 }
+
 .train-card__runs-on li {
   color: #9ca3af;
   font-size: 14px;
@@ -76,14 +113,13 @@
   justify-self: end;
 }
 
+/* Times */
 .train-card__times-inline {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 0 12px;
+  padding: 14px 12px 12px;
   white-space: nowrap;
-  padding-left: 12px;
-  padding-right: 12px;
 }
 
 .time {
@@ -91,11 +127,13 @@
   line-height: 1;
   font-size: 22px;
 }
+
 .time--strong {
   font-size: 20px;
   font-weight: 800;
   line-height: 1;
 }
+
 .station {
   font-size: 16px;
   line-height: 1;
@@ -109,62 +147,123 @@
   color: #6b7280;
   margin: 0 8px;
 }
+
 .duration-inline .dash {
   width: 34px;
   height: 2px;
   background: #d1d5db;
 }
 
-.train-card__classes {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin: 4px 0 12px;
-  padding-left: 12px;
-  padding-right: 12px;
-}
-.chip {
-  background: #fbfbfb;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 10px 12px;
-  min-width: 150px;
-}
-.chip__title {
-  font-weight: 700;
-  margin-bottom: 4px;
-}
+/* Refresh button */
 .refresh {
   background: transparent;
   border: none;
   padding: 0;
   color: #111827;
   cursor: pointer;
+  font-weight: 800;
 }
 
+.refresh:hover {
+  text-decoration: underline;
+}
+
+/* Notice */
 .notice {
   margin: 8px 0 12px;
   font-size: 17px;
   color: #111827;
 }
+
 .notice--plain {
   background: transparent !important;
   border: none !important;
   padding-left: 20px;
   padding-right: 20px;
 }
+
 .notice strong {
   font-weight: 700;
 }
 
+/* Actions */
 .train-card__actions {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
-  padding-left: 12px;
-  padding-right: 12px;
+  padding: 0 12px 12px;
 }
 
+/* TrainCard.css */
+.train-card__actions [disabled],
+.train-card__actions button:disabled,
+.train-card__actions [aria-disabled="true"] {
+  pointer-events: none !important;
+  opacity: 0.55;
+  cursor: not-allowed !important;
+}
+
+/* Slider class cards */
+.class-card {
+  padding: 10px;
+}
+
+.class-card--picked {
+  cursor: pointer; /* selected card can open availability */
+}
+
+.get-availability {
+  color: #dc2626;
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+.picked-info {
+  margin-top: 6px;
+}
+
+.picked-fare {
+  margin-top: 6px;
+  font-weight: 900;
+}
+
+/* Status colors */
+.status {
+  font-weight: 900;
+}
+
+.status--available {
+  color: #16a34a;
+}
+
+.status--wl {
+  color: #dc2626;
+}
+
+.status--blocked {
+  color: #111827;
+}
+
+.status--other {
+  color: #6b7280;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+  color: #7c2d12;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-weight: 800;
+  z-index: 9999;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Responsive */
 @media (max-width: 640px) {
   .train-card__times-inline {
     grid-auto-flow: row;
@@ -175,6 +274,7 @@
     font-size: 28px;
   }
 }
+
 @media (max-width: 480px) {
   .train-card__topbar {
     flex-direction: column;

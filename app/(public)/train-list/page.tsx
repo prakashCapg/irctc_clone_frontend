@@ -1,42 +1,132 @@
 "use client";
 
-import { CardWrapper } from "react-batch-component-library";
+import { useMemo, useState } from "react";
+import { CardWrapper, Button } from "react-batch-component-library";
 import "./train-list.css";
-import TrainCard, { TrainData } from "@/components/TrainCard/TrainCard";
+import TrainCard from "@/components/TrainCard/TrainCard";
+import { trains as ALL_TRAINS } from "@/data/trains";
 
-const train: TrainData = {
-  number: "20503",
-  name: "RAJDHANI EXP",
-  runsOn: ["M", "T", "W", "T", "F", "S", "S"],
-  depTime: "01:40",
-  depStation: "VARANASI JN",
-  depDate: "Mon, 05 Jan",
-  duration: "11:58",
-  arrTime: "13:38",
-  arrStation: "NEW DELHI",
-  arrDate: "Mon, 05 Jan",
-
-  classes: [
-    { code: "3A", label: "AC 3 Tier (3A)" },
-    { code: "2A", label: "AC 2 Tier (2A)" },
-    { code: "1A", label: "AC First Class (1A)" },
-  ],
+const toISO = (d: Date) => d.toISOString().slice(0, 10);
+const parseHHMM = (hhmm: string) => {
+  const [h, m] = hhmm.split(":").map(Number);
+  return h * 60 + (m || 0);
 };
+const addDays = (d: Date, n: number) => {
+  const nd = new Date(d);
+  nd.setDate(nd.getDate() + n);
+  return nd;
+};
+const formatHeaderDate = (d: Date) =>
+  new Intl.DateTimeFormat("en-GB", {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(d);
+
+type SortKey = "DEPARTURE_ASC" | "DEPARTURE_DESC";
 
 export default function TrainListPage() {
+  const earliestISO =
+    ALL_TRAINS.map((t: any) => t.journeyDateISO)
+      .filter(Boolean)
+      .sort()[0] ?? toISO(new Date());
+
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date(earliestISO));
+  const [sortKey, setSortKey] = useState<SortKey>("DEPARTURE_ASC");
+
+  const fromStation = "VARANASI JN";
+  const toStation = "DELHI";
+  const quotaLabel = "General";
+
+  const filtered = useMemo(() => {
+    const iso = toISO(selectedDate);
+    return ALL_TRAINS.filter((t: any) => t.journeyDateISO === iso);
+  }, [selectedDate]);
+
+  const sorted = useMemo(() => {
+    const out = [...filtered];
+    if (sortKey === "DEPARTURE_ASC") {
+      out.sort((a: any, b: any) => parseHHMM(a.depTime) - parseHHMM(b.depTime));
+    } else {
+      out.sort((a: any, b: any) => parseHHMM(b.depTime) - parseHHMM(a.depTime));
+    }
+    return out;
+  }, [filtered, sortKey]);
+
+  const count = sorted.length;
+  const headerText = `${count} Results for ${fromStation} ➜ ${toStation} | ${formatHeaderDate(
+    selectedDate
+  )} For Quota | ${quotaLabel}`;
+
+  const toggleSort = () =>
+    setSortKey((k) =>
+      k === "DEPARTURE_ASC" ? "DEPARTURE_DESC" : "DEPARTURE_ASC"
+    );
+  const nextDay = () => setSelectedDate((d) => addDays(d, 1));
+  const prevDay = () => setSelectedDate((d) => addDays(d, -1));
+
   return (
     <section className="train-list">
-      <CardWrapper height="auto" border="1px solid #e5e7eb"></CardWrapper>
+      <CardWrapper height="auto" border="1px solid #e5e7eb" />
 
       <div className="content-grid">
-        <CardWrapper height="auto" border="1px solid #e5e7eb"></CardWrapper>
+        <CardWrapper height="auto" border="1px solid #e5e7eb" />
 
         <CardWrapper
           className="card-wrapper"
           height="auto"
           border="1px solid #e5e7eb"
+          padding="0px"
         >
-          <TrainCard train={train} />
+          <div className="results-toolbar results-toolbar--tight">
+            <div className="results-toolbar__left">
+              <div className="results-headline">{headerText}</div>
+            </div>
+
+            <div className="results-toolbar__right">
+              <Button
+                type="primary"
+                label="Sort By | Departure"
+                onClick={toggleSort}
+                className="btn-irc sort"
+                borderRadius="2px"
+                padding="10px 14px"
+                backgroundColor="#193c73"
+                color="#ffffff"
+              />
+              <Button
+                type="tertiary"
+                label="‹ Previous Day"
+                onClick={prevDay}
+                className="btn-irc nav"
+                borderRadius="2px"
+                padding="10px 14px"
+                backgroundColor="#ffffff"
+                color="#111111"
+                border="1px solid #cfd4dc"
+              />
+              <Button
+                type="tertiary"
+                label="Next Day ›"
+                onClick={nextDay}
+                className="btn-irc nav"
+                borderRadius="2px"
+                padding="10px 14px"
+                backgroundColor="#ffffff"
+                color="#111111"
+                border="1px solid #cfd4dc"
+              />
+            </div>
+          </div>
+
+          {count === 0 ? (
+            <div className="no-results">Not Available</div>
+          ) : (
+            sorted.map((train: any) => (
+              <TrainCard key={train.number} train={train} />
+            ))
+          )}
         </CardWrapper>
       </div>
     </section>

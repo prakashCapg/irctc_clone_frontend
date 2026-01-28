@@ -1,0 +1,52 @@
+export const stations = [
+  { code: "NDLS", name: "New Delhi", city: "Delhi", state: "Delhi" },
+  { code: "DLI", name: "Delhi Junction", city: "Delhi", state: "Delhi" },
+  {
+    code: "BSB",
+    name: "Varanasi Junction",
+    city: "Varanasi",
+    state: "Uttar Pradesh",
+  },
+  {
+    code: "CNB",
+    name: "Kanpur Central",
+    city: "Kanpur",
+    state: "Uttar Pradesh",
+  },
+  { code: "LKO", name: "Lucknow NR", city: "Lucknow", state: "Uttar Pradesh" },
+  {
+    code: "ALD",
+    name: "Prayagraj Junction",
+    city: "Prayagraj",
+    state: "Uttar Pradesh",
+  },
+  { code: "PNBE", name: "Patna Junction", city: "Patna", state: "Bihar" },
+  { code: "BCT", name: "Mumbai Central", city: "Mumbai", state: "Maharashtra" },
+  {
+    code: "CSMT",
+    name: "Chhatrapati Shivaji Maharaj Terminus",
+    city: "Mumbai",
+    state: "Maharashtra",
+  },
+  {
+    code: "HWH",
+    name: "Howrah Junction",
+    city: "Howrah",
+    state: "West Bengal",
+  },
+  { code: "SDAH", name: "Sealdah", city: "Kolkata", state: "West Bengal" },
+  { code: "PUNE", name: "Pune Junction", city: "Pune", state: "Maharashtra" },
+  {
+    code: "CSTM",
+    name: "Chhatrapati Shivaji Terminus",
+    city: "Mumbai",
+    state: "Maharashtra",
+  },
+  { code: "GZB", name: "Ghaziabad", city: "Ghaziabad", state: "Uttar Pradesh" },
+  {
+    code: "JHS",
+    name: "Jhansi Junction",
+    city: "Jhansi",
+    state: "Uttar Pradesh",
+  },
+];
