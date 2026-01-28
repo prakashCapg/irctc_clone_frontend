@@ -1,0 +1,188 @@
+.availability-panel,
+.availability-panel * {
+  ailability-panel__content .rs__card,
+  .availability-panel__content .rs__card * {
+    font-family: var(--irctc-font) !important;
+  }
+}
+
+.availability-panel,
+.availability-panel * {
+  box-sizing: border-box;
+}
+
+.availability-panel {
+  width: 100%;
+  background: #fff;
+  overflow: hidden;
+}
+
+/* ===== Top bar ===== */
+.availability-panel__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: #f0f0f0;
+  border-bottom: 2px solid #e3e3e3;
+  padding-left: 15px;
+}
+
+.availability-tabs {
+  flex: 1;
+  min-width: 0; /* critical */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+}
+
+.availability-tab {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  padding: 8px 10px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #111827;
+
+  border-bottom: 3px solid transparent;
+  line-height: 1;
+}
+
+.availability-tab.is-active {
+  border-bottom-color: #f28c28;
+}
+
+.availability-close {
+  flex: 0 0 auto;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 900;
+  color: black;
+  padding: 6px 8px;
+  border-radius: 6px;
+  line-height: 1;
+}
+
+.availability-close:hover {
+  color: #f28c28;
+  background: rgba(242, 140, 40, 0.12);
+}
+
+/* ===== Content area ===== */
+.availability-panel__content {
+  width: 100%;
+  min-width: 0;
+  padding: 8px 10px;
+  background: #f0f0f0;
+  overflow: hidden;
+}
+
+/* ============================================================
+   ✅ Slider Overrides ONLY inside Availability panel
+   This removes blank left gap + makes slider cards look correct.
+   ============================================================ */
+
+/* Remove outer slider margins that create spacing issues */
+.availability-panel__content .rs {
+  margin: 0;
+  width: 100%;
+}
+
+/* ✅ Fix left blank gap: remove margin-left from track */
+.availability-panel__content .rs__track {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+  gap: 12px;
+}
+
+/* Make arrows not take card-like space */
+.availability-panel__content .rs__arrow {
+  font-size: 26px;
+  padding: 0 4px;
+}
+
+/* ✅ Make the slider card itself look like IRCTC date tile (not grey) */
+.availability-panel__content .rs__card {
+  width: 180px;
+  min-height: unset;
+  padding: 0; /* remove grey padding */
+  background: transparent; /* remove grey background */
+  border: none; /* remove border */
+  box-shadow: none;
+}
+
+/* ✅ Our date tile button becomes the actual tile */
+.availability-panel__content .date-card {
+  width: 180px;
+  min-width: 180px;
+  max-width: 180px;
+
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  border-radius: 10px;
+
+  cursor: pointer;
+  text-align: left;
+  display: block;
+}
+
+/* Hover + picked state */
+.availability-panel__content .date-card:hover {
+  background: #f9fafb;
+}
+
+.availability-panel__content .date-card--picked {
+  border-color: #fb923c;
+  background: #fff7ed;
+}
+
+/* Date + status */
+.date-card__date {
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.date-card__status {
+  font-weight: 900;
+  font-size: 13px;
+}
+
+/* Status colors */
+.status {
+  font-weight: 900;
+}
+
+.status--available {
+  color: #16a34a; /* green */
+}
+
+.status--wl {
+  color: #dc2626; /* red */
+}
+
+.status--blocked {
+  color: #111827; /* black */
+}
+
+.status--other {
+  color: #6b7280; /* grey */
+}
+
+/* Footer */
+.availability-footer {
+  font-size: 12px;
+  color: #333;
+  padding: 10px;
+  background: #f0f0f0;
+  border-top: 1px solid #e3e3e3;
+}
