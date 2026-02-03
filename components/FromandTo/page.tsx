@@ -2,8 +2,8 @@ import { ArrowUpDown, Navigation } from "lucide-react";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { SearchInput } from "react-batch-component-library";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
-import React from "react";
 import "./FromandTo.css";
+import { stations } from "@/data/stations";
 
 type FromAndToProps = {
   fromQuery: string;
@@ -14,85 +14,23 @@ type FromAndToProps = {
 
 export default function FromAndToComponent(props: FromAndToProps) {
   const { fromQuery, setFromQuery, toQuery, setToQuery } = props;
-  const searchData = [
-    {
-      stationName: "Mumbai Central",
-      stationCode: "MMCT",
-      stationCity: "Mumbai",
-      stationState: "Maharashtra",
-    },
-    {
-      stationName: "Mumbai Central",
-      stationCode: "BCT",
-      stationCity: "Mumbai",
-      stationState: "Maharashtra",
-    },
-    {
-      stationName: "Lokmanyatilak T",
-      stationCode: "LTT",
-      stationCity: "Mumbai",
-      stationState: "Maharashtra",
-    },
-    {
-      stationName: "C Shivaji mah T",
-      stationCode: "CSMT",
-      stationCity: "Mumbai",
-      stationState: "Maharashtra",
-    },
-    {
-      stationName: "Bandra Terminus",
-      stationCode: "BDTS",
-      stationCity: "Mumbai",
-      stationState: "Maharashtra",
-    },
-    {
-      stationName: "Borivali",
-      stationCode: "BVI",
-      stationCity: "Mumbai",
-      stationState: "Maharashtra",
-    },
-    {
-      stationName: "Kalyan Jn",
-      stationCode: "KYN",
-      stationCity: "Mumbai",
-      stationState: "Maharashtra",
-    },
-    {
-      stationName: "Thane",
-      stationCode: "TNA",
-      stationCity: "Mumbai",
-      stationState: "Maharashtra",
-    },
-    {
-      stationName: "Dadar",
-      stationCode: "DR",
-      stationCity: "Mumbai",
-      stationState: "Maharashtra",
-    },
-    {
-      stationName: "Delhi",
-      stationCode: "DLI",
-      stationCity: "New Delhi",
-      stationState: "Delhi",
-    },
-  ];
 
   type station = {
-    stationName: string;
-    stationCode: string;
-    stationCity: string;
-    stationState: string;
+    name: string;
+    code: string;
+    city: string;
+    state: string;
   };
 
   const filteredSuggestions = (query: string) => {
     if (!query.trim()) return [];
-    return searchData
+    return stations
       .filter((item) => {
         return (
-          item.stationName.toLowerCase().includes(query.toLowerCase()) ||
-          item.stationCode.toLowerCase().includes(query.toLowerCase()) ||
-          item.stationCity.toLowerCase().includes(query.toLowerCase()) ||
-          item.stationState.toLowerCase().includes(query.toLowerCase())
+          item.name.toLowerCase().includes(query.toLowerCase()) ||
+          item.code.toLowerCase().includes(query.toLowerCase()) ||
+          item.city.toLowerCase().includes(query.toLowerCase()) ||
+          item.state.toLowerCase().includes(query.toLowerCase())
         );
       })
       .slice(0, 8);
@@ -100,23 +38,23 @@ export default function FromAndToComponent(props: FromAndToProps) {
 
   const handleSelectFromSuggestion = (station: station) => {
     setFromQuery(
-      station.stationName.toUpperCase() +
+      station.name.toUpperCase() +
         " - " +
-        station.stationCode.toUpperCase() +
+        station.code.toUpperCase() +
         " (" +
-        station.stationCity.toUpperCase() +
-        ")"
+        station.city.toUpperCase() +
+        ")",
     );
   };
 
   const handleSelectToSuggestion = (station: station) => {
     setToQuery(
-      station.stationName.toUpperCase() +
+      station.name.toUpperCase() +
         " - " +
-        station.stationCode.toUpperCase() +
+        station.code.toUpperCase() +
         " (" +
-        station.stationCity.toUpperCase() +
-        ")"
+        station.city.toUpperCase() +
+        ")",
     );
   };
 
@@ -124,11 +62,10 @@ export default function FromAndToComponent(props: FromAndToProps) {
     return (
       <>
         <div className="state-name-code-city">
-          {station.stationName} - {station.stationCode}{" "}
-          <strong>({station.stationCity})</strong>
+          {station.name} - {station.code} <strong>({station.city})</strong>
         </div>
         <div style={{ fontSize: "14px" }}>
-          <strong>{station.stationState}</strong>
+          <strong>{station.state}</strong>
         </div>
       </>
     );
