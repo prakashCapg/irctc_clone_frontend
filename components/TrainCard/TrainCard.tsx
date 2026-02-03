@@ -71,7 +71,7 @@ export default function TrainCard({ train }: { train: TrainData }) {
   >({});
 
   const [lastSelectedClass, setLastSelectedClass] = useState<string | null>(
-    null
+    null,
   );
 
   const [toast, setToast] = useState<string | null>(null);
@@ -80,13 +80,13 @@ export default function TrainCard({ train }: { train: TrainData }) {
     window.clearTimeout((showToast as { _t?: number })._t);
     (showToast as { _t?: number })._t = window.setTimeout(
       () => setToast(null),
-      2500
+      2500,
     );
   };
 
   const anySelected = useMemo(
     () => Object.values(pickedByClass).some(Boolean),
-    [pickedByClass]
+    [pickedByClass],
   );
 
   const selectedPick = lastSelectedClass
@@ -113,7 +113,7 @@ export default function TrainCard({ train }: { train: TrainData }) {
       return;
     }
     showToast(
-      `Proceed booking: ${selectedPick.classCode} ${selectedPick.statusText}`
+      `Proceed booking: ${selectedPick.classCode} ${selectedPick.statusText}`,
     );
   };
 

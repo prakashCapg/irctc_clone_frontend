@@ -8,10 +8,9 @@ import {
   DatePickerInput,
   DropDown,
 } from "react-batch-component-library";
-import { useForm } from "react-hook-form";
-
 import { Briefcase } from "react-feather";
 import "./trainsearch.css";
+import { useTrainContext } from "@/app/contexts/TrainContext";
 
 export default function TrainSearchPage() {
   const router = useRouter();
@@ -19,6 +18,7 @@ export default function TrainSearchPage() {
   const [toQuery, setToQuery] = useState<string>("");
   const [date, setDate] = useState<string>("");
   const [trainclass, setTrainClass] = useState<string>("all");
+  const { setTrainListData } = useTrainContext();
 
   type DropDownOption = {
     label: string;
@@ -36,23 +36,24 @@ export default function TrainSearchPage() {
     { label: "First Class (FC)", value: "First Class (FC)" },
   ];
 
-  type Card = { id: number; label: string };
-
-  const items: Card[] = Array.from({ length: 13 }, (_, i) => ({
-    id: i + 1,
-    label: `Item ${i + 1}`,
-  }));
-
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const params = new URLSearchParams();
-    if (fromQuery) params.set("from", fromQuery);
-    if (toQuery) params.set("to", toQuery);
-    if (date) params.set("date", date);
-    if (trainclass && trainclass !== "all") params.set("class", trainclass);
-
-    console.log(params.toString());
-    router.push(`/train-list?${params.toString()}`);
+    const res = await fetch("api/TrainSearchApi", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        fromQuery: fromQuery,
+        toQuery: toQuery,
+        date: date,
+        trainclass: trainclass,
+      }),
+    });
+    const data = await res.json();
+    console.log(data.trains);
+    setTrainListData(data.trains);
+    {
+      data.error ? "" : router.push(`/train-list`);
+    }
   };
 
   return (
