@@ -1,0 +1,157 @@
+.popup-content.ts-popupOverride {
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+
+.popup-content.ts-popupOverride .popup-body {
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+
+.popup-content.ts-popupOverride .popup-body-content {
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
+.ts-wrapper {
+  background: #ffffff;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.ts-headerBar {
+  background: #083b83;
+  color: #ffffff;
+  padding: 12px 20px;
+  font-size: 18px;
+  font-weight: 800;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #052b63;
+}
+
+.ts-headerClose {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  color: #ffffff;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.ts-gap-xs {
+  height: 10px;
+}
+.ts-gap-sm {
+  height: 14px;
+}
+
+.ts-summaryCard {
+  margin: 0 20px;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.ts-summaryHeader {
+  background: #083b83;
+  color: #ffffff;
+  display: grid;
+  grid-template-columns: 170px 0.5fr 0.5fr 0.5fr 1.2fr;
+  padding: 10px 0;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  border-bottom: 2px solid #052b63;
+}
+
+.ts-summaryBody {
+  display: grid;
+  grid-template-columns: 170px 0.5fr 0.5fr 0.5fr 1.2fr;
+  padding: 12px 0;
+  text-align: center;
+  gap: 0;
+  background: #ffffff;
+}
+
+.ts-ucase {
+  text-transform: uppercase;
+}
+
+.ts-runsOnRow {
+  display: inline-flex;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.ts-badge {
+  padding: 0px 6px;
+  font-weight: 400;
+  border: 1px solid transparent;
+}
+
+.ts-badge--green {
+  background: #c2fac4;
+  border-color: #90ff97;
+  color: #048508;
+}
+
+.ts-badge--red {
+  background: #ff9494;
+  border-color: #ff9696;
+  color: #8d0404;
+}
+
+.ts-tableHeaderRow {
+  margin: 0 20px;
+  display: grid;
+  grid-template-columns: 60px 110px 1fr 110px 120px 120px 170px 100px 60px;
+  background: #083b83;
+  color: #ffffff;
+  padding: 10px 0;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  border-bottom: 2px solid #052b63;
+  border-left: 1px solid #dcdcdc;
+  border-right: 1px solid #dcdcdc;
+}
+
+.ts-tableBody {
+  margin: 0 20px;
+  border-left: 1px solid #dcdcdc;
+  border-right: 1px solid #dcdcdc;
+  border-bottom: 1px solid #dcdcdc;
+  max-height: 55vh;
+  overflow-y: auto;
+  background: #ffffff;
+}
+
+.ts-tableRow {
+  display: grid;
+  grid-template-columns: 60px 110px 1fr 110px 120px 120px 170px 100px 60px;
+  padding: 10px 0;
+  font-size: 14px;
+  border-bottom: 1px solid #e1e1e1;
+}
+
+.ts-tableRow:nth-child(odd) {
+  background: #fafafa;
+}
+.ts-tableRow:nth-child(even) {
+  background: #ffffff;
+}
+
+.ts-td {
+  text-align: center;
+  font-weight: 490;
+  padding: 0 4px;
+}

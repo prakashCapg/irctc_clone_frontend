@@ -1,9 +1,11 @@
+// components/TrainCard/TrainCard.tsx
 "use client";
 
 import { useMemo, useState } from "react";
 import "./TrainCard.css";
 import { Button, Slider } from "react-batch-component-library";
 import Availability, { AvailabilityPick } from "../Availability/Availability";
+import TrainSchedulePopup from "../TrainSchedulePopup/page";
 
 export type TrainClass = { code: string; label: string };
 export type RunsOnItem = string | { key: string; label: string };
@@ -21,15 +23,6 @@ export type TrainData = {
   arrDate: string;
   classes: TrainClass[];
 };
-
-function runsOnKeyLabel(item: RunsOnItem, i: number) {
-  return typeof item === "string"
-    ? { key: `${item}-${i}`, label: item }
-    : {
-        key: item.key ?? `day-${i}`,
-        label: item.label ?? String(item.key ?? ""),
-      };
-}
 
 type StatusType = "AVAILABLE" | "WL" | "REGRET" | "NOT_AVAILABLE" | "OTHER";
 
@@ -63,8 +56,152 @@ function isBookable(text?: string) {
   return type === "AVAILABLE" || type === "WL";
 }
 
+const CANONICAL_DAYS: { key: string; label: string }[] = [
+  { key: "M", label: "M" },
+  { key: "T", label: "T" },
+  { key: "W", label: "W" },
+  { key: "Th", label: "T" },
+  { key: "F", label: "F" },
+  { key: "Sa", label: "S" },
+  { key: "Su", label: "S" },
+];
+
+function normalizeRunsOnSet(items: RunsOnItem[]): Set<string> {
+  const set = new Set<string>();
+
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+
+    if (typeof item === "string") {
+      const raw = item.trim().toUpperCase();
+
+      if (["M", "T", "W", "F"].includes(raw)) {
+        set.add(raw);
+        continue;
+      }
+      if (raw === "TH") {
+        set.add("Th");
+        continue;
+      }
+      if (raw === "SA") {
+        set.add("Sa");
+        continue;
+      }
+      if (raw === "SU") {
+        set.add("Su");
+        continue;
+      }
+
+      if (/^MON/.test(raw)) {
+        set.add("M");
+        continue;
+      }
+      if (/^TUE/.test(raw)) {
+        set.add("T");
+        continue;
+      }
+      if (/^WED/.test(raw)) {
+        set.add("W");
+        continue;
+      }
+      if (/^THU/.test(raw)) {
+        set.add("Th");
+        continue;
+      }
+      if (/^FRI/.test(raw)) {
+        set.add("F");
+        continue;
+      }
+      if (/^SAT/.test(raw)) {
+        set.add("Sa");
+        continue;
+      }
+      if (/^SUN/.test(raw)) {
+        set.add("Su");
+        continue;
+      }
+
+      if (raw === "T") {
+        set.add("T");
+        set.add("Th");
+        continue;
+      }
+      if (raw === "S") {
+        set.add("Sa");
+        set.add("Su");
+        continue;
+      }
+    } else {
+      const fromKeyOrLabel = (item.key ?? item.label ?? "")
+        .trim()
+        .toUpperCase();
+      if (!fromKeyOrLabel) continue;
+
+      if (["M", "T", "W", "F"].includes(fromKeyOrLabel)) {
+        set.add(fromKeyOrLabel);
+        continue;
+      }
+      if (fromKeyOrLabel === "TH") {
+        set.add("Th");
+        continue;
+      }
+      if (fromKeyOrLabel === "SA") {
+        set.add("Sa");
+        continue;
+      }
+      if (fromKeyOrLabel === "SU") {
+        set.add("Su");
+        continue;
+      }
+
+      if (/^MON/.test(fromKeyOrLabel)) {
+        set.add("M");
+        continue;
+      }
+      if (/^TUE/.test(fromKeyOrLabel)) {
+        set.add("T");
+        continue;
+      }
+      if (/^WED/.test(fromKeyOrLabel)) {
+        set.add("W");
+        continue;
+      }
+      if (/^THU/.test(fromKeyOrLabel)) {
+        set.add("Th");
+        continue;
+      }
+      if (/^FRI/.test(fromKeyOrLabel)) {
+        set.add("F");
+        continue;
+      }
+      if (/^SAT/.test(fromKeyOrLabel)) {
+        set.add("Sa");
+        continue;
+      }
+      if (/^SUN/.test(fromKeyOrLabel)) {
+        set.add("Su");
+        continue;
+      }
+
+      if (fromKeyOrLabel === "T") {
+        set.add("T");
+        set.add("Th");
+        continue;
+      }
+      if (fromKeyOrLabel === "S") {
+        set.add("Sa");
+        set.add("Su");
+        continue;
+      }
+    }
+  }
+
+  return set;
+}
+
 export default function TrainCard({ train }: { train: TrainData }) {
   const [openClass, setOpenClass] = useState<string | null>(null);
+  const [isScheduleOpen, setIsScheduleOpen] = useState(false);
 
   const [pickedByClass, setPickedByClass] = useState<
     Record<string, AvailabilityPick | undefined>
@@ -94,7 +231,6 @@ export default function TrainCard({ train }: { train: TrainData }) {
     : undefined;
 
   const handleRefresh = (clsCode: string) => setOpenClass(clsCode);
-
   const handleCloseAvailability = () => setOpenClass(null);
 
   const handlePick = (clsCode: string, pick: AvailabilityPick) => {
@@ -123,6 +259,11 @@ export default function TrainCard({ train }: { train: TrainData }) {
     setOpenClass(cls);
   };
 
+  const runsOnSet = useMemo(
+    () => normalizeRunsOnSet(train.runsOn),
+    [train.runsOn]
+  );
+
   return (
     <div className="train-card">
       {toast && <div className="toast">{toast}</div>}
@@ -135,17 +276,40 @@ export default function TrainCard({ train }: { train: TrainData }) {
           </h3>
         </div>
 
-        <div className="train-card__meta">
+        <div
+          className="train-card__meta"
+          aria-label="Train runs on days of the week"
+        >
           <span className="muted">Runs On:</span>
-          <ul className="train-card__runs-on">
-            {train.runsOn.map((d, i) => {
-              const { key, label } = runsOnKeyLabel(d, i);
-              return <li key={key}>{label}</li>;
+          <ul className="train-card__runs-on" role="list">
+            {CANONICAL_DAYS.map(({ key, label }) => {
+              const active = runsOnSet.has(key);
+              return (
+                <li
+                  key={key}
+                  className={`runs-on__day ${
+                    active ? "runs-on__day--active" : "runs-on__day--muted"
+                  }`}
+                >
+                  {label}
+                </li>
+              );
             })}
           </ul>
         </div>
 
-        <div className="train-card__schedule">Train Schedule</div>
+        <div
+          className="train-card__schedule"
+          onClick={() => setIsScheduleOpen(true)}
+          style={{ cursor: "pointer", fontWeight: "700", color: "#478be3" }}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") setIsScheduleOpen(true);
+          }}
+        >
+          Train Schedule
+        </div>
       </div>
 
       <div className="train-card__times-inline">
@@ -184,7 +348,6 @@ export default function TrainCard({ train }: { train: TrainData }) {
           renderItem={(cls: TrainClass, indexOnPage: number) => {
             const picked = pickedByClass[cls.code];
             const isPicked = !!picked;
-
             const showGetAvailability = anySelected && !isPicked;
 
             const type = getStatusType(picked?.statusText);
@@ -228,7 +391,7 @@ export default function TrainCard({ train }: { train: TrainData }) {
                   <button
                     className="link refresh"
                     type="button"
-                    onClick={() => handleRefresh(cls.code)}
+                    onClick={() => setOpenClass(cls.code)}
                   >
                     Refresh ↻
                   </button>
@@ -261,6 +424,13 @@ export default function TrainCard({ train }: { train: TrainData }) {
           onClick={handleOtherDates}
         />
       </div>
+
+      {/* Train Schedule Popup */}
+      <TrainSchedulePopup
+        isOpen={isScheduleOpen}
+        setIsOpen={setIsScheduleOpen}
+        train={train}
+      />
     </div>
   );
 }

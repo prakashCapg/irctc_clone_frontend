@@ -5,7 +5,7 @@
 
 .content-grid {
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 280px 1fr;
   gap: 16px;
   align-items: start;
 }
@@ -23,9 +23,19 @@
   justify-content: space-between;
   gap: 12px;
   padding: 12px 16px;
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
   flex-wrap: wrap;
+  margin: 12px 0;
+}
+
+.train-results {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.results-toolbar,
+.train-results {
+  grid-column: 2;
 }
 
 .results-toolbar--tight {

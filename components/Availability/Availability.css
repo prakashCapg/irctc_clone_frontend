@@ -1,13 +1,7 @@
+/* ✅ Font override (your original block was malformed; this is correct) */
 .availability-panel,
 .availability-panel * {
-  ailability-panel__content .rs__card,
-  .availability-panel__content .rs__card * {
-    font-family: var(--irctc-font) !important;
-  }
-}
-
-.availability-panel,
-.availability-panel * {
+  font-family: var(--irctc-font) !important;
   box-sizing: border-box;
 }
 
@@ -64,15 +58,32 @@
   cursor: pointer;
   font-size: 18px;
   font-weight: 900;
-  color: black;
+
+  /* ✅ base black */
+  color: #000;
+
   padding: 6px 8px;
   border-radius: 6px;
   line-height: 1;
+
+  /* prevents browser link/visited weirdness on some resets */
+  text-decoration: none;
 }
 
-.availability-close:hover {
-  color: #f28c28;
-  background: rgba(242, 140, 40, 0.12);
+/* ✅ force black in all states */
+.availability-close,
+.availability-close:hover,
+.availability-close:active,
+.availability-close:focus,
+.availability-close:focus-visible,
+.availability-close:visited {
+  color: #000 !important;
+}
+
+/* optional: subtle focus ring for accessibility */
+.availability-close:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.35);
+  outline-offset: 2px;
 }
 
 /* ===== Content area ===== */
@@ -86,7 +97,6 @@
 
 /* ============================================================
    ✅ Slider Overrides ONLY inside Availability panel
-   This removes blank left gap + makes slider cards look correct.
    ============================================================ */
 
 /* Remove outer slider margins that create spacing issues */
@@ -108,13 +118,13 @@
   padding: 0 4px;
 }
 
-/* ✅ Make the slider card itself look like IRCTC date tile (not grey) */
+/* ✅ Make the slider card itself look like IRCTC date tile */
 .availability-panel__content .rs__card {
   width: 180px;
   min-height: unset;
   padding: 0; /* remove grey padding */
   background: transparent; /* remove grey background */
-  border: none; /* remove border */
+  border: none;
   box-shadow: none;
 }
 

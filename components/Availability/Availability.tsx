@@ -34,6 +34,7 @@ function getStatusType(text?: string): StatusType {
     return "NOT_AVAILABLE";
   return "OTHER";
 }
+
 function statusClass(type: StatusType) {
   switch (type) {
     case "AVAILABLE":
@@ -75,6 +76,7 @@ export default function Availability({
     string,
     Record<string, DateOption[]>
   >;
+
   const rawData = useMemo(
     () => availabilityStore[trainNumber] ?? {},
     [trainNumber]

@@ -5,6 +5,7 @@ import { CardWrapper, Button } from "react-batch-component-library";
 import "./train-list.css";
 import TrainCard from "@/components/TrainCard/TrainCard";
 import { trains as ALL_TRAINS } from "@/data/trains";
+import TrainSearchBar from "@/components/TrainSearchBar/page";
 
 const toISO = (d: Date) => d.toISOString().slice(0, 10);
 const parseHHMM = (hhmm: string) => {
@@ -56,78 +57,93 @@ export default function TrainListPage() {
 
   const count = sorted.length;
   const headerText = `${count} Results for ${fromStation} ➜ ${toStation} | ${formatHeaderDate(
-    selectedDate
+    selectedDate,
   )} For Quota | ${quotaLabel}`;
 
   const toggleSort = () =>
     setSortKey((k) =>
-      k === "DEPARTURE_ASC" ? "DEPARTURE_DESC" : "DEPARTURE_ASC"
+      k === "DEPARTURE_ASC" ? "DEPARTURE_DESC" : "DEPARTURE_ASC",
     );
   const nextDay = () => setSelectedDate((d) => addDays(d, 1));
   const prevDay = () => setSelectedDate((d) => addDays(d, -1));
 
   return (
     <section className="train-list">
-      <CardWrapper height="auto" border="1px solid #e5e7eb" />
+      <CardWrapper
+        height="auto"
+        border="1px solid #e5e7eb"
+        borderRadius="0px"
+        padding="0px"
+        overflow="hidden"
+      >
+        <TrainSearchBar />
+      </CardWrapper>
 
       <div className="content-grid">
-        <CardWrapper height="auto" border="1px solid #e5e7eb" />
-
         <CardWrapper
-          className="card-wrapper"
           height="auto"
           border="1px solid #e5e7eb"
-          padding="0px"
-        >
-          <div className="results-toolbar results-toolbar--tight">
-            <div className="results-toolbar__left">
-              <div className="results-headline">{headerText}</div>
-            </div>
+          borderRadius="0px"
+        />
 
-            <div className="results-toolbar__right">
-              <Button
-                type="primary"
-                label="Sort By | Departure"
-                onClick={toggleSort}
-                className="btn-irc sort"
-                borderRadius="2px"
-                padding="10px 14px"
-                backgroundColor="#193c73"
-                color="#ffffff"
-              />
-              <Button
-                type="tertiary"
-                label="‹ Previous Day"
-                onClick={prevDay}
-                className="btn-irc nav"
-                borderRadius="2px"
-                padding="10px 14px"
-                backgroundColor="#ffffff"
-                color="#111111"
-                border="1px solid #cfd4dc"
-              />
-              <Button
-                type="tertiary"
-                label="Next Day ›"
-                onClick={nextDay}
-                className="btn-irc nav"
-                borderRadius="2px"
-                padding="10px 14px"
-                backgroundColor="#ffffff"
-                color="#111111"
-                border="1px solid #cfd4dc"
-              />
-            </div>
+        <div className="results-toolbar results-toolbar--tight">
+          <div className="results-toolbar__left">
+            <div className="results-headline">{headerText}</div>
           </div>
+          <div className="results-toolbar__right">
+            <Button
+              type="primary"
+              label="Sort By | Departure"
+              onClick={toggleSort}
+              className="btn-irc sort"
+              borderRadius="2px"
+              padding="10px 14px"
+              backgroundColor="#193c73"
+              color="#ffffff"
+            />
+            <Button
+              type="tertiary"
+              label="‹ Previous Day"
+              onClick={prevDay}
+              className="btn-irc nav"
+              borderRadius="2px"
+              padding="10px 14px"
+              backgroundColor="#ffffff"
+              color="#111111"
+              border="1px solid #cfd4dc"
+            />
+            <Button
+              type="tertiary"
+              label="Next Day ›"
+              onClick={nextDay}
+              className="btn-irc nav"
+              borderRadius="2px"
+              padding="10px 14px"
+              backgroundColor="#ffffff"
+              color="#111111"
+              border="1px solid #cfd4dc"
+            />
+          </div>
+        </div>
 
+        <div className="train-results">
           {count === 0 ? (
             <div className="no-results">Not Available</div>
           ) : (
             sorted.map((train: any) => (
-              <TrainCard key={train.number} train={train} />
+              <CardWrapper
+                key={train.number}
+                className="card-wrapper"
+                height="auto"
+                border="1px solid #e5e7eb"
+                padding="0px"
+                borderRadius="0px"
+              >
+                <TrainCard train={train} />
+              </CardWrapper>
             ))
           )}
-        </CardWrapper>
+        </div>
       </div>
     </section>
   );
