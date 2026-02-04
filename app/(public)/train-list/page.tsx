@@ -6,6 +6,7 @@ import "./train-list.css";
 import TrainCard from "@/components/TrainCard/TrainCard";
 import { trains as ALL_TRAINS } from "@/data/trains";
 import TrainSearchBar from "@/components/TrainSearchBar/page";
+import { useTrainContext } from "@/app/contexts/TrainContext";
 
 const toISO = (d: Date) => d.toISOString().slice(0, 10);
 const parseHHMM = (hhmm: string) => {
@@ -33,11 +34,14 @@ export default function TrainListPage() {
       .filter(Boolean)
       .sort()[0] ?? toISO(new Date());
 
+  const { trainListData } = useTrainContext();
+  console.log("TrainListPage trainListData:", trainListData);
+
   const [selectedDate, setSelectedDate] = useState<Date>(new Date(earliestISO));
   const [sortKey, setSortKey] = useState<SortKey>("DEPARTURE_ASC");
 
-  const fromStation = "VARANASI JN";
-  const toStation = "DELHI";
+  const fromStation = trainListData[0]?.depStation || "VARANASI JN";
+  const toStation = trainListData[0]?.arrStation || "NEW DELHI";
   const quotaLabel = "General";
 
   const filtered = useMemo(() => {
@@ -59,6 +63,7 @@ export default function TrainListPage() {
   const headerText = `${count} Results for ${fromStation} ➜ ${toStation} | ${formatHeaderDate(
     selectedDate,
   )} For Quota | ${quotaLabel}`;
+  )}`;
 
   const toggleSort = () =>
     setSortKey((k) =>
@@ -86,43 +91,45 @@ export default function TrainListPage() {
           borderRadius="0px"
         />
 
-        <div className="results-toolbar results-toolbar--tight">
-          <div className="results-toolbar__left">
-            <div className="results-headline">{headerText}</div>
-          </div>
-          <div className="results-toolbar__right">
-            <Button
-              type="primary"
-              label="Sort By | Departure"
-              onClick={toggleSort}
-              className="btn-irc sort"
-              borderRadius="2px"
-              padding="10px 14px"
-              backgroundColor="#193c73"
-              color="#ffffff"
-            />
-            <Button
-              type="tertiary"
-              label="‹ Previous Day"
-              onClick={prevDay}
-              className="btn-irc nav"
-              borderRadius="2px"
-              padding="10px 14px"
-              backgroundColor="#ffffff"
-              color="#111111"
-              border="1px solid #cfd4dc"
-            />
-            <Button
-              type="tertiary"
-              label="Next Day ›"
-              onClick={nextDay}
-              className="btn-irc nav"
-              borderRadius="2px"
-              padding="10px 14px"
-              backgroundColor="#ffffff"
-              color="#111111"
-              border="1px solid #cfd4dc"
-            />
+            <div className="results-toolbar__right">
+              <div className="sort-by_departure">
+                <Button
+                  type="primary"
+                  label="Sort By | Departure"
+                  onClick={toggleSort}
+                  className="btn-irc sort"
+                  borderRadius="2px"
+                  padding="10px 14px"
+                  backgroundColor="#193c73"
+                  color="#ffffff"
+                />
+              </div>
+
+              <div className="previous_next_day">
+                <Button
+                  type="tertiary"
+                  label="‹ Previous Day"
+                  onClick={prevDay}
+                  className="btn-irc nav"
+                  borderRadius="2px"
+                  padding="10px 14px"
+                  backgroundColor="#ffffff"
+                  color="#111111"
+                  border="1px solid #cfd4dc"
+                />
+                <Button
+                  type="tertiary"
+                  label="Next Day ›"
+                  onClick={nextDay}
+                  className="btn-irc nav"
+                  borderRadius="2px"
+                  padding="10px 14px"
+                  backgroundColor="#ffffff"
+                  color="#111111"
+                  border="1px solid #cfd4dc"
+                />
+              </div>
+            </div>
           </div>
         </div>
 

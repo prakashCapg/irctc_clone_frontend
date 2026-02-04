@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "../globals.css";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import { TrainProvider } from "../contexts/TrainContext";
 
 export const metadata: Metadata = {
   title: "IRCTC Clone",
@@ -17,9 +18,9 @@ export default function RootLayout({
     <html lang="en">
       <body className="site-body">
         <Navbar />
-
-        <main className="site-main">{children}</main>
-
+        <TrainProvider>
+          <main className="site-main">{children}</main>
+        </TrainProvider>
         <Footer />
       </body>
     </html>
