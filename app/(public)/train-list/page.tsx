@@ -5,6 +5,7 @@ import { CardWrapper, Button } from "react-batch-component-library";
 import "./train-list.css";
 import TrainCard from "@/components/TrainCard/TrainCard";
 import { trains as ALL_TRAINS } from "@/data/trains";
+import TrainSearchBar from "@/components/TrainSearchBar/page";
 import { useTrainContext } from "@/app/contexts/TrainContext";
 
 const toISO = (d: Date) => d.toISOString().slice(0, 10);
@@ -61,6 +62,7 @@ export default function TrainListPage() {
   const count = sorted.length;
   const headerText = `${count} Results for ${fromStation} ➜ ${toStation} | ${formatHeaderDate(
     selectedDate,
+  )} For Quota | ${quotaLabel}`;
   )}`;
 
   const toggleSort = () =>
@@ -72,21 +74,22 @@ export default function TrainListPage() {
 
   return (
     <section className="train-list">
-      <CardWrapper height="auto" border="1px solid #e5e7eb" />
+      <CardWrapper
+        height="auto"
+        border="1px solid #e5e7eb"
+        borderRadius="0px"
+        padding="0px"
+        overflow="hidden"
+      >
+        <TrainSearchBar />
+      </CardWrapper>
 
       <div className="content-grid">
-        <CardWrapper height="auto" border="1px solid #e5e7eb" />
-
         <CardWrapper
-          className="card-wrapper"
           height="auto"
           border="1px solid #e5e7eb"
-          padding="0px"
-        >
-          <div className="results-toolbar results-toolbar--tight">
-            <div className="results-toolbar__left">
-              <div className="results-headline">{headerText}</div>
-            </div>
+          borderRadius="0px"
+        />
 
             <div className="results-toolbar__right">
               <div className="sort-by_departure">
@@ -128,15 +131,26 @@ export default function TrainListPage() {
               </div>
             </div>
           </div>
+        </div>
 
+        <div className="train-results">
           {count === 0 ? (
             <div className="no-results">Not Available</div>
           ) : (
             sorted.map((train: any) => (
-              <TrainCard key={train.number} train={train} />
+              <CardWrapper
+                key={train.number}
+                className="card-wrapper"
+                height="auto"
+                border="1px solid #e5e7eb"
+                padding="0px"
+                borderRadius="0px"
+              >
+                <TrainCard train={train} />
+              </CardWrapper>
             ))
           )}
-        </CardWrapper>
+        </div>
       </div>
     </section>
   );

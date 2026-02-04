@@ -2,7 +2,7 @@ export const trains = [
   {
     number: "20503",
     name: "RAJDHANI EXP",
-    runsOn: ["M", "T", "W", "T", "F", "S", "S"],
+    runsOn: ["M", "T", "W", "S", "S"],
     depTime: "01:40",
     depStation: "MUMBAI CENTRAL",
     depStationCode: "BCT",
@@ -24,7 +24,7 @@ export const trains = [
   {
     number: "12561",
     name: "KALKA SHATABDI",
-    runsOn: ["M", "T", "W", "T", "F", "S", "S"],
+    runsOn: ["W", "T", "F", "S", "S"],
     depTime: "06:50",
     depStation: "NEW DELHI",
     depStationCode: "NDLS",
@@ -43,7 +43,7 @@ export const trains = [
   {
     number: "22436",
     name: "HOWRAH RAJDHANI",
-    runsOn: ["M", "T", "W", "T", "F", "S", "S"],
+    runsOn: ["M", "T", "S", "S"],
     depTime: "16:30",
     depStation: "NEW DELHI",
     depStationCode: "NDLS",
@@ -63,7 +63,7 @@ export const trains = [
   {
     number: "12319",
     name: "MUMBAI RAJDHANI",
-    runsOn: ["M", "T", "W", "T", "F", "S", "S"],
+    runsOn: ["T", "T", "S", "S"],
     depTime: "16:00",
     depStation: "NEW DELHI",
     depStationCode: "NDLS",

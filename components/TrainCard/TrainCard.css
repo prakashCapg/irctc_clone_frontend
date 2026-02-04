@@ -53,7 +53,6 @@
   width: 100%;
 }
 
-/* Top Bar */
 .train-card__topbar {
   display: flex;
   justify-content: space-between;
@@ -95,25 +94,39 @@
 }
 
 .train-card__runs-on {
-  display: inline-flex;
-  gap: 10px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
   list-style: none;
   padding: 0;
+  padding-top: 3px;
   margin: 0;
 }
 
-.train-card__runs-on li {
-  color: #9ca3af;
-  font-size: 14px;
+.train-card__runs-on .runs-on__day {
   font-weight: 600;
-  letter-spacing: 0.5px;
+  font-size: 14px;
+  line-height: 1;
+  padding: 4px 6px;
+  border-radius: 6px;
+  text-align: center;
+  user-select: none;
+}
+
+.train-card__runs-on .runs-on__day--active {
+  color: #111827;
+}
+
+.train-card__runs-on .runs-on__day--muted {
+  color: #9ca3af;
+  background: transparent;
 }
 
 .train-card__schedule {
   justify-self: end;
 }
 
-/* Times */
 .train-card__times-inline {
   display: flex;
   justify-content: space-between;
@@ -154,7 +167,6 @@
   background: #d1d5db;
 }
 
-/* Refresh button */
 .refresh {
   background: transparent;
   border: none;
@@ -168,7 +180,6 @@
   text-decoration: underline;
 }
 
-/* Notice */
 .notice {
   margin: 8px 0 12px;
   font-size: 17px;
@@ -186,7 +197,6 @@
   font-weight: 700;
 }
 
-/* Actions */
 .train-card__actions {
   display: flex;
   gap: 10px;
@@ -194,7 +204,6 @@
   padding: 0 12px 12px;
 }
 
-/* TrainCard.css */
 .train-card__actions [disabled],
 .train-card__actions button:disabled,
 .train-card__actions [aria-disabled="true"] {
@@ -203,13 +212,12 @@
   cursor: not-allowed !important;
 }
 
-/* Slider class cards */
 .class-card {
   padding: 10px;
 }
 
 .class-card--picked {
-  cursor: pointer; /* selected card can open availability */
+  cursor: pointer;
 }
 
 .get-availability {
@@ -227,7 +235,6 @@
   font-weight: 900;
 }
 
-/* Status colors */
 .status {
   font-weight: 900;
 }
@@ -248,7 +255,6 @@
   color: #6b7280;
 }
 
-/* Toast */
 .toast {
   position: fixed;
   top: 14px;
@@ -263,7 +269,6 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
 }
 
-/* Responsive */
 @media (max-width: 640px) {
   .train-card__times-inline {
     grid-auto-flow: row;
