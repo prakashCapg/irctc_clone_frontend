@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Slider } from "react-batch-component-library";
 import "./Availability.css";
 import { availabilityDb } from "@/data/availability";
+import CloseIcon from "@mui/icons-material/Close";
 
 export type AvailabilityPick = {
   classCode: string;
@@ -66,7 +67,7 @@ export default function Availability({
   pickedByClass,
   onPick,
   onClose,
-  useApi = false, // ✅ optional: future API support
+  useApi = false, // optional: future API support
 }: {
   trainNumber: string;
   initialClassCode: string;
@@ -160,7 +161,8 @@ export default function Availability({
           aria-label="Close availability"
           onClick={onClose}
         >
-          ✖
+          {/* Normalize the icon via CSS classes instead of inline styles */}
+          <CloseIcon className="availability-close__icon" />
         </button>
       </div>
 

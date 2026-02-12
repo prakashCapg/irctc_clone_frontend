@@ -1,4 +1,4 @@
-/* ✅ Font override (your original block was malformed; this is correct) */
+/* Font + box model */
 .availability-panel,
 .availability-panel * {
   font-family: var(--irctc-font) !important;
@@ -51,26 +51,34 @@
   border-bottom-color: #f28c28;
 }
 
+/* Close button aligned perfectly */
 .availability-close {
   flex: 0 0 auto;
   border: none;
   background: transparent;
   cursor: pointer;
-  font-size: 18px;
-  font-weight: 900;
 
-  /* ✅ base black */
-  color: #000;
+  display: inline-flex; /* <— alignment fix */
+  align-items: center; /* <— alignment fix */
+  justify-content: center;
 
   padding: 6px 8px;
   border-radius: 6px;
-  line-height: 1;
-
-  /* prevents browser link/visited weirdness on some resets */
+  line-height: 1.1;
+  color: #000;
   text-decoration: none;
 }
 
-/* ✅ force black in all states */
+.availability-close__icon,
+.availability-close .MuiSvgIcon-root {
+  width: 1em;
+  height: 1em;
+  font-size: 22px; /* balance vs tabs’ font */
+  line-height: 1;
+  vertical-align: middle;
+}
+
+/* force black in all states */
 .availability-close,
 .availability-close:hover,
 .availability-close:active,
@@ -95,40 +103,32 @@
   overflow: hidden;
 }
 
-/* ============================================================
-   ✅ Slider Overrides ONLY inside Availability panel
-   ============================================================ */
-
-/* Remove outer slider margins that create spacing issues */
+/* ===== Slider overrides inside panel ===== */
 .availability-panel__content .rs {
   margin: 0;
   width: 100%;
 }
 
-/* ✅ Fix left blank gap: remove margin-left from track */
 .availability-panel__content .rs__track {
   margin-left: 0 !important;
   padding-left: 0 !important;
   gap: 12px;
 }
 
-/* Make arrows not take card-like space */
 .availability-panel__content .rs__arrow {
   font-size: 26px;
   padding: 0 4px;
 }
 
-/* ✅ Make the slider card itself look like IRCTC date tile */
 .availability-panel__content .rs__card {
   width: 180px;
   min-height: unset;
-  padding: 0; /* remove grey padding */
-  background: transparent; /* remove grey background */
+  padding: 0;
+  background: transparent;
   border: none;
   box-shadow: none;
 }
 
-/* ✅ Our date tile button becomes the actual tile */
 .availability-panel__content .date-card {
   width: 180px;
   min-width: 180px;
@@ -144,7 +144,6 @@
   display: block;
 }
 
-/* Hover + picked state */
 .availability-panel__content .date-card:hover {
   background: #f9fafb;
 }
@@ -154,7 +153,6 @@
   background: #fff7ed;
 }
 
-/* Date + status */
 .date-card__date {
   font-weight: 800;
   color: #111827;

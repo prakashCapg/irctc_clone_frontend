@@ -7,6 +7,7 @@ import TrainCard from "@/components/TrainCard/TrainCard";
 import TrainSearchBar from "@/components/TrainSearchBar/page";
 import { useTrainContext } from "@/app/contexts/TrainContext";
 import SortByMenu, { type SortKey } from "@/components/SortByMenu/SortByMenu";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 const parseHHMM = (hhmm: string | undefined): number => {
   if (!hhmm) return Number.POSITIVE_INFINITY;
@@ -65,7 +66,7 @@ export default function TrainListPage() {
     }
   }, [trainListData.length, setTrainListData, setSearchState]);
 
-  // ✅ Sorting that respects selected SortKey
+  // Sorting
   const sorted = useMemo(() => {
     const out = [...trainListData];
 
@@ -115,7 +116,11 @@ export default function TrainListPage() {
   }, [trainListData, sortKey]);
 
   const count = sorted.length;
-  const headerText = `${count} Results for ${displayStation(searchState.fromQuery)} ➜ ${displayStation(searchState.toQuery)} | ${formatHeaderDate(searchState.date)}`;
+  const headerText = `${count} Results for ${displayStation(
+    searchState.fromQuery,
+  )} ➜ ${displayStation(searchState.toQuery)} | ${formatHeaderDate(
+    searchState.date,
+  )}`;
 
   const shiftDay = async (delta: number) => {
     if (!searchState.date) return;
@@ -169,39 +174,23 @@ export default function TrainListPage() {
           >
             <SortByMenu value={sortKey} onChange={setSortKey} />
 
-            <div
-              className="previous_next_day"
-              style={{ display: "flex", gap: 8 }}
-            >
+            <div className="previous_next_day">
               <button
-                className="btn-irc nav"
+                className="btn-irc nav btn-irc--nav"
                 onClick={() => shiftDay(-1)}
                 aria-label="Previous Day"
-                style={{
-                  backgroundColor: "#ffffff",
-                  color: "#111111",
-                  border: "1px solid #cfd4dc",
-                  borderRadius: "2px",
-                  padding: "10px 14px",
-                  fontWeight: 700,
-                }}
               >
-                ‹ Previous Day
+                <ChevronRightIcon className="btn-irc__icon btn-irc__icon--left" />
+                <span className="btn-irc__label">Previous Day</span>
               </button>
+
               <button
-                className="btn-irc nav"
+                className="btn-irc nav btn-irc--nav"
                 onClick={() => shiftDay(1)}
                 aria-label="Next Day"
-                style={{
-                  backgroundColor: "#ffffff",
-                  color: "#111111",
-                  border: "1px solid #cfd4dc",
-                  borderRadius: "2px",
-                  padding: "10px 14px",
-                  fontWeight: 700,
-                }}
               >
-                Next Day ›
+                <span className="btn-irc__label">Next Day</span>
+                <ChevronRightIcon className="btn-irc__icon" />
               </button>
             </div>
           </div>

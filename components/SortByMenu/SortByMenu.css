@@ -14,7 +14,6 @@
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
   box-shadow: none;
   transition:
     background-color 0.12s ease,
