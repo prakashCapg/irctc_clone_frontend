@@ -1,3 +1,4 @@
+// app/train-search/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -14,11 +15,13 @@ import { useTrainContext } from "@/app/contexts/TrainContext";
 
 export default function TrainSearchPage() {
   const router = useRouter();
+
   const [fromQuery, setFromQuery] = useState<string>("");
   const [toQuery, setToQuery] = useState<string>("");
   const [date, setDate] = useState<string>("");
   const [trainclass, setTrainClass] = useState<string>("all");
-  const { setTrainListData } = useTrainContext();
+
+  const { setTrainListData, setSearchState } = useTrainContext();
 
   type DropDownOption = {
     label: string;
@@ -38,22 +41,27 @@ export default function TrainSearchPage() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await fetch("api/TrainSearchApi", {
+
+    const payload = { fromQuery, toQuery, date, trainclass };
+
+    const res = await fetch("/api/TrainSearchApi", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        fromQuery: fromQuery,
-        toQuery: toQuery,
-        date: date,
-        trainclass: trainclass,
-      }),
+      body: JSON.stringify(payload),
     });
+
     const data = await res.json();
-    console.log(data.trains);
+
+    if (data?.error) return;
+
     setTrainListData(data.trains);
-    {
-      data.error ? "" : router.push(`/train-list`);
-    }
+    setSearchState(payload);
+
+    // Persist so refresh doesn't lose results
+    sessionStorage.setItem("trainListData", JSON.stringify(data.trains));
+    sessionStorage.setItem("searchState", JSON.stringify(payload));
+
+    router.push("/train-list");
   };
 
   return (
@@ -63,12 +71,14 @@ export default function TrainSearchPage() {
           <div className="book-ticket-heading">
             <h1>BOOK TICKET</h1>
           </div>
+
           <FromAndToComponent
             fromQuery={fromQuery}
             setFromQuery={setFromQuery}
             toQuery={toQuery}
             setToQuery={setToQuery}
           />
+
           <div className="date-dropdown">
             <DatePickerInput
               date={date}
@@ -83,6 +93,7 @@ export default function TrainSearchPage() {
               leftIcon={<Briefcase size={16} color="#2f80ed" />}
             />
           </div>
+
           <div className="Form-submit">
             <Button label="Search Trains" type="secondary" />
           </div>

@@ -1,74 +1,147 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { CardWrapper, Button } from "react-batch-component-library";
+import { useEffect, useMemo, useState } from "react";
+import { CardWrapper } from "react-batch-component-library";
 import "./train-list.css";
 import TrainCard from "@/components/TrainCard/TrainCard";
-import { trains as ALL_TRAINS } from "@/data/trains";
 import TrainSearchBar from "@/components/TrainSearchBar/page";
 import { useTrainContext } from "@/app/contexts/TrainContext";
+import SortByMenu, { type SortKey } from "@/components/SortByMenu/SortByMenu";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
-const toISO = (d: Date) => d.toISOString().slice(0, 10);
-const parseHHMM = (hhmm: string) => {
+const parseHHMM = (hhmm: string | undefined): number => {
+  if (!hhmm) return Number.POSITIVE_INFINITY;
   const [h, m] = hhmm.split(":").map(Number);
-  return h * 60 + (m || 0);
+  return (h || 0) * 60 + (m || 0);
 };
-const addDays = (d: Date, n: number) => {
-  const nd = new Date(d);
-  nd.setDate(nd.getDate() + n);
-  return nd;
+
+const parseDuration = (hhmm: string | undefined): number => {
+  if (!hhmm) return Number.POSITIVE_INFINITY;
+  const [h, m] = hhmm.split(":").map(Number);
+  return (h || 0) * 60 + (m || 0);
 };
-const formatHeaderDate = (d: Date) =>
-  new Intl.DateTimeFormat("en-GB", {
+
+const arrivalEpochMs = (
+  journeyDateISO: string | undefined,
+  depTime: string | undefined,
+  duration: string | undefined,
+): number => {
+  if (!journeyDateISO || !depTime || !duration) return Number.POSITIVE_INFINITY;
+  const dep = new Date(`${journeyDateISO}T${depTime.padStart(5, "0")}:00`);
+  if (isNaN(dep.getTime())) return Number.POSITIVE_INFINITY;
+  const mins = parseDuration(duration);
+  return dep.getTime() + mins * 60_000;
+};
+
+const formatHeaderDate = (iso: string) => {
+  if (!iso) return "";
+  const d = new Date(iso);
+  return new Intl.DateTimeFormat("en-GB", {
     weekday: "short",
     day: "2-digit",
     month: "short",
     year: "numeric",
   }).format(d);
+};
 
-type SortKey = "DEPARTURE_ASC" | "DEPARTURE_DESC";
+const displayStation = (q: string) => {
+  if (!q) return "—";
+  return q.split("-")[0].trim() || q;
+};
 
 export default function TrainListPage() {
-  const earliestISO =
-    ALL_TRAINS.map((t: any) => t.journeyDateISO)
-      .filter(Boolean)
-      .sort()[0] ?? toISO(new Date());
+  const { trainListData, setTrainListData, searchState, setSearchState } =
+    useTrainContext();
 
-  const { trainListData } = useTrainContext();
-  console.log("TrainListPage trainListData:", trainListData);
+  const [sortKey, setSortKey] = useState<SortKey>(() => {
+    return (sessionStorage.getItem("sortKey") as SortKey) ?? "DEPARTURE_ASC";
+  });
 
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date(earliestISO));
-  const [sortKey, setSortKey] = useState<SortKey>("DEPARTURE_ASC");
-
-  const fromStation = "VARANASI JN";
-  const toStation = "DELHI";
-
-  const filtered = useMemo(() => {
-    const iso = toISO(selectedDate);
-    return ALL_TRAINS.filter((t: any) => t.journeyDateISO === iso);
-  }, [selectedDate]);
+  useEffect(() => {
+    if (trainListData.length === 0) {
+      const cachedTrains = sessionStorage.getItem("trainListData");
+      const cachedSearch = sessionStorage.getItem("searchState");
+      if (cachedTrains) setTrainListData(JSON.parse(cachedTrains));
+      if (cachedSearch) setSearchState(JSON.parse(cachedSearch));
+    }
+  }, [trainListData.length, setTrainListData, setSearchState]);
 
   const sorted = useMemo(() => {
-    const out = [...filtered];
-    if (sortKey === "DEPARTURE_ASC") {
-      out.sort((a: any, b: any) => parseHHMM(a.depTime) - parseHHMM(b.depTime));
-    } else {
-      out.sort((a: any, b: any) => parseHHMM(b.depTime) - parseHHMM(a.depTime));
-    }
+    const out = [...trainListData];
+
+    const depKey = (t: any) => parseHHMM(t.depTime);
+    const durKey = (t: any) => parseDuration(t.duration);
+    const arrKey = (t: any) =>
+      arrivalEpochMs(t.journeyDateISO, t.depTime, t.duration);
+
+    const tie = (a: any, b: any) =>
+      String(a.number).localeCompare(String(b.number));
+
+    out.sort((a: any, b: any) => {
+      switch (sortKey) {
+        case "DEPARTURE_ASC": {
+          const d = depKey(a) - depKey(b);
+          return d !== 0 ? d : tie(a, b);
+        }
+        case "DEPARTURE_DESC": {
+          const d = depKey(b) - depKey(a);
+          return d !== 0 ? d : tie(a, b);
+        }
+
+        case "ARRIVAL_ASC": {
+          const d = arrKey(a) - arrKey(b);
+          return d !== 0 ? d : tie(a, b);
+        }
+        case "ARRIVAL_DESC": {
+          const d = arrKey(b) - arrKey(a);
+          return d !== 0 ? d : tie(a, b);
+        }
+
+        case "DURATION_ASC": {
+          const d = durKey(a) - durKey(b);
+          return d !== 0 ? d : tie(a, b);
+        }
+        case "DURATION_DESC": {
+          const d = durKey(b) - durKey(a);
+          return d !== 0 ? d : tie(a, b);
+        }
+
+        default:
+          return tie(a, b);
+      }
+    });
+
     return out;
-  }, [filtered, sortKey]);
+  }, [trainListData, sortKey]);
 
   const count = sorted.length;
-  const headerText = `${count} Results for ${fromStation} ➜ ${toStation} | ${formatHeaderDate(
-    selectedDate,
+  const headerText = `${count} Results for ${displayStation(
+    searchState.fromQuery,
+  )} ➜ ${displayStation(searchState.toQuery)} | ${formatHeaderDate(
+    searchState.date,
   )}`;
 
-  const toggleSort = () =>
-    setSortKey((k) =>
-      k === "DEPARTURE_ASC" ? "DEPARTURE_DESC" : "DEPARTURE_ASC",
-    );
-  const nextDay = () => setSelectedDate((d) => addDays(d, 1));
-  const prevDay = () => setSelectedDate((d) => addDays(d, -1));
+  const shiftDay = async (delta: number) => {
+    if (!searchState.date) return;
+    const d = new Date(searchState.date);
+    d.setDate(d.getDate() + delta);
+    const newISO = d.toISOString().slice(0, 10);
+
+    const payload = { ...searchState, date: newISO };
+    setSearchState(payload);
+
+    const res = await fetch("/api/TrainSearchApi", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (data?.error) return;
+
+    setTrainListData(data.trains);
+    sessionStorage.setItem("trainListData", JSON.stringify(data.trains));
+    sessionStorage.setItem("searchState", JSON.stringify(payload));
+  };
 
   return (
     <section className="train-list">
@@ -77,7 +150,7 @@ export default function TrainListPage() {
         border="1px solid #e5e7eb"
         borderRadius="0px"
         padding="0px"
-        overflow="hidden"
+        overflow="visible"
       >
         <TrainSearchBar />
       </CardWrapper>
@@ -93,43 +166,31 @@ export default function TrainListPage() {
           <div className="results-toolbar__left">
             <div className="results-headline">{headerText}</div>
           </div>
-          <div className="results-toolbar__right">
-            <div className="sort-by_departure">
-              <Button
-                type="primary"
-                label="Sort By | Departure"
-                onClick={toggleSort}
-                className="btn-irc sort"
-                borderRadius="2px"
-                padding="10px 14px"
-                backgroundColor="#193c73"
-                color="#ffffff"
-              />
-            </div>
+
+          <div
+            className="results-toolbar__right"
+            style={{ display: "flex", gap: 12, alignItems: "center" }}
+          >
+            <SortByMenu value={sortKey} onChange={setSortKey} />
 
             <div className="previous_next_day">
-              <Button
-                type="tertiary"
-                label="‹ Previous Day"
-                onClick={prevDay}
-                className="btn-irc nav"
-                borderRadius="2px"
-                padding="10px 14px"
-                backgroundColor="#ffffff"
-                color="#111111"
-                border="1px solid #cfd4dc"
-              />
-              <Button
-                type="tertiary"
-                label="Next Day ›"
-                onClick={nextDay}
-                className="btn-irc nav"
-                borderRadius="2px"
-                padding="10px 14px"
-                backgroundColor="#ffffff"
-                color="#111111"
-                border="1px solid #cfd4dc"
-              />
+              <button
+                className="btn-irc nav btn-irc--nav"
+                onClick={() => shiftDay(-1)}
+                aria-label="Previous Day"
+              >
+                <ChevronRightIcon className="btn-irc__icon btn-irc__icon--left" />
+                <span className="btn-irc__label">Previous Day</span>
+              </button>
+
+              <button
+                className="btn-irc nav btn-irc--nav"
+                onClick={() => shiftDay(1)}
+                aria-label="Next Day"
+              >
+                <span className="btn-irc__label">Next Day</span>
+                <ChevronRightIcon className="btn-irc__icon" />
+              </button>
             </div>
           </div>
         </div>

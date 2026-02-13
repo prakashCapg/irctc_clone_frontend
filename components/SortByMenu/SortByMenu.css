@@ -1,0 +1,122 @@
+.sortby__container {
+  display: inline-block;
+  position: relative;
+}
+
+.sortby__btn {
+  background-color: #193c73;
+  color: white;
+  border: 1px solid #193c73;
+  padding: 10px 14px;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: none;
+  transition:
+    background-color 0.12s ease,
+    border-color 0.12s ease,
+    outline-color 0.12s ease;
+  user-select: none;
+}
+.sortby__btn:hover {
+  background-color: #163366;
+  border-color: #163366;
+  outline: 2px solid #f2994a;
+  outline-offset: 2px;
+}
+.sortby__btn:focus,
+.sortby__btn:focus-visible {
+  outline: 2px solid #f2994a;
+  outline-offset: 2px;
+}
+
+.sortby__menu {
+  background: rgb(245, 245, 245);
+  border: 2px solid #b9c0c9;
+  border-radius: 2px;
+  box-shadow: gray 0px 3px 12px 11px;
+  padding: 12px;
+  transform: translateY(0px);
+  opacity: 1;
+}
+
+.sortby__menu-arrow {
+  position: absolute;
+  top: -10px;
+  left: 14px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #b9c0c9;
+}
+
+.sortby__menu-arrow::after {
+  content: "";
+  position: absolute;
+  left: -9px;
+  top: 1px;
+  width: 0;
+  height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-bottom: 9px solid #ffffff;
+}
+
+.sortby__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.sortby__cell {
+  padding: 10px 12px;
+  /* background-color: white; */
+  color: #000;
+  background: #f5f5f5;
+  border: 1px solid #b1b1b1;
+}
+
+.sortby__cell:hover {
+  background: white;
+  border-color: orange;
+}
+.sortby__cell:focus {
+  outline: 2px solid #2f80ed;
+  outline-offset: 2px;
+}
+
+.sortby__cell--active {
+  background: #193c73 !important;
+  color: white !important;
+  border-color: orange !important;
+}
+.sortby__cell--active .sortby__cell-title {
+  color: white;
+}
+.sortby__cell--active .sortby__cell-sub {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.sortby__cell-title {
+  font-weight: 550;
+  font-size: 16px;
+  line-height: 1.1;
+  padding-bottom: 8px;
+}
+.sortby__cell-sub {
+  font-size: 13.5px;
+  font-weight: 550;
+  color: #222;
+  opacity: 0.95;
+}
+
+@media (max-width: 640px) {
+  .sortby__grid {
+    grid-template-columns: 1fr;
+    max-width: 340px;
+  }
+}

@@ -17,11 +17,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="site-body">
-        <Navbar />
         <TrainProvider>
+          <Navbar />
+
           <main className="site-main">{children}</main>
+
+          <Footer />
         </TrainProvider>
-        <Footer />
       </body>
     </html>
   );

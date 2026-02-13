@@ -212,9 +212,9 @@
   cursor: not-allowed !important;
 }
 
-.class-card {
+/* .class-card {
   padding: 10px;
-}
+} */
 
 .class-card--picked {
   cursor: pointer;

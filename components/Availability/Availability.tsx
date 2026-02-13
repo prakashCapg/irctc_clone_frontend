@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Slider } from "react-batch-component-library";
 import "./Availability.css";
 import { availabilityDb } from "@/data/availability";
+import CloseIcon from "@mui/icons-material/Close";
 
 export type AvailabilityPick = {
   classCode: string;
@@ -24,6 +25,7 @@ function getClassCodeFromTabLabel(label: string) {
 }
 
 type StatusType = "AVAILABLE" | "WL" | "REGRET" | "NOT_AVAILABLE" | "OTHER";
+
 function getStatusType(text?: string): StatusType {
   if (!text) return "OTHER";
   const t = text.toUpperCase().trim();
@@ -65,22 +67,51 @@ export default function Availability({
   pickedByClass,
   onPick,
   onClose,
+  useApi = false,
 }: {
   trainNumber: string;
   initialClassCode: string;
   pickedByClass: Record<string, AvailabilityPick | undefined>;
   onPick: (classCode: string, pick: AvailabilityPick) => void;
   onClose: () => void;
+  useApi?: boolean;
 }) {
   const availabilityStore = availabilityDb as Record<
     string,
     Record<string, DateOption[]>
   >;
 
-  const rawData = useMemo(
+  const rawLocal = useMemo(
     () => availabilityStore[trainNumber] ?? {},
-    [trainNumber]
+    [trainNumber],
   );
+
+  const [rawRemote, setRawRemote] = useState<Record<string, DateOption[]>>({});
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!useApi) return;
+    let alive = true;
+
+    (async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`/api/availability?trainNo=${trainNumber}`);
+        const json = await res.json();
+        if (!alive) return;
+
+        setRawRemote(json?.availability ?? {});
+      } finally {
+        if (alive) setLoading(false);
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
+  }, [useApi, trainNumber]);
+
+  const rawData = useApi ? rawRemote : rawLocal;
 
   const tabData = useMemo(() => {
     const result: Record<string, DateOption[]> = {};
@@ -113,9 +144,7 @@ export default function Availability({
               type="button"
               role="tab"
               aria-selected={activeTab === tab}
-              className={`availability-tab ${
-                tab === activeTab ? "is-active" : ""
-              }`}
+              className={`availability-tab ${tab === activeTab ? "is-active" : ""}`}
               onClick={() => setActiveTab(tab)}
             >
               {tab}
@@ -129,12 +158,14 @@ export default function Availability({
           aria-label="Close availability"
           onClick={onClose}
         >
-          ✖
+          <CloseIcon className="availability-close__icon" />
         </button>
       </div>
 
       <div className="availability-panel__content">
-        {tabs.length === 0 ? (
+        {loading ? (
+          <div style={{ padding: 16 }}>Loading availability...</div>
+        ) : tabs.length === 0 ? (
           <div style={{ padding: 16 }}>
             Availability data not found for train {trainNumber}.
           </div>
