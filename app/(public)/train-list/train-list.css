@@ -69,7 +69,6 @@
   gap: 8px;
 }
 
-/* Base button theme */
 .btn-irc {
   box-shadow: none !important;
   text-transform: none !important;
@@ -78,7 +77,6 @@
   line-height: 1.1 !important;
 }
 
-/* Sort button color (if any) */
 .btn-irc.sort {
   background-color: #193c73 !important;
   color: #ffffff !important;
@@ -88,7 +86,6 @@
   background-color: #163366 !important;
 }
 
-/* Nav buttons color/border */
 .btn-irc.nav {
   background-color: #ffffff !important;
   color: #111111 !important;
@@ -100,7 +97,6 @@
   outline-offset: 2px;
 }
 
-/* ✅ Turn nav button into a flex container for perfect alignment */
 .btn-irc--nav {
   display: inline-flex;
   align-items: center;
@@ -110,24 +106,21 @@
   white-space: nowrap;
 }
 
-/* MUI SVG icon normalization inside our buttons */
 .btn-irc--nav .btn-irc__icon,
 .btn-irc--nav .MuiSvgIcon-root {
   flex: 0 0 auto;
   width: 1em;
   height: 1em;
-  font-size: 18px; /* tweak 16–20px to taste */
+  font-size: 18px;
   vertical-align: middle;
   display: inline-block;
   line-height: 1;
 }
 
-/* Rotate only the left chevron for “Previous” */
 .btn-irc__icon--left {
   transform: rotate(180deg);
 }
 
-/* Label text normalization */
 .btn-irc__label {
   font-weight: 700;
   font-size: 14px;

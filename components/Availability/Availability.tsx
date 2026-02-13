@@ -67,7 +67,7 @@ export default function Availability({
   pickedByClass,
   onPick,
   onClose,
-  useApi = false, // optional: future API support
+  useApi = false,
 }: {
   trainNumber: string;
   initialClassCode: string;
@@ -81,13 +81,11 @@ export default function Availability({
     Record<string, DateOption[]>
   >;
 
-  // Local fallback dataset
   const rawLocal = useMemo(
     () => availabilityStore[trainNumber] ?? {},
     [trainNumber],
   );
 
-  // If useApi=true, we load remote into rawRemote
   const [rawRemote, setRawRemote] = useState<Record<string, DateOption[]>>({});
   const [loading, setLoading] = useState(false);
 
@@ -102,7 +100,6 @@ export default function Availability({
         const json = await res.json();
         if (!alive) return;
 
-        // Expecting { availability: { "3A": [...], "2A": [...] } }
         setRawRemote(json?.availability ?? {});
       } finally {
         if (alive) setLoading(false);
@@ -161,7 +158,6 @@ export default function Availability({
           aria-label="Close availability"
           onClick={onClose}
         >
-          {/* Normalize the icon via CSS classes instead of inline styles */}
           <CloseIcon className="availability-close__icon" />
         </button>
       </div>

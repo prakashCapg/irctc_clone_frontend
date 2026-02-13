@@ -66,7 +66,6 @@ export default function TrainListPage() {
     }
   }, [trainListData.length, setTrainListData, setSearchState]);
 
-  // Sorting
   const sorted = useMemo(() => {
     const out = [...trainListData];
 

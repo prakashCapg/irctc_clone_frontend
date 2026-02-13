@@ -36,7 +36,7 @@ export default function SortByMenu({
   const [panelWidth, setPanelWidth] = useState(panelMinWidth);
   const containerRef = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null); // NEW
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const computePos = () => {
     const btn = btnRef.current;
@@ -75,7 +75,6 @@ export default function SortByMenu({
     };
   }, [open]);
 
-  // ✅ Outside click on "click" (not mousedown) + check both refs
   useEffect(() => {
     const onDocClick = (e: MouseEvent) => {
       const target = e.target as Node | null;
@@ -88,7 +87,7 @@ export default function SortByMenu({
       const clickInsideMenu = !!(menu && menu.contains(target));
 
       if (clickInsideTrigger || clickInsideMenu) {
-        return; // ignore clicks inside
+        return;
       }
       setOpen(false);
     };
@@ -97,7 +96,7 @@ export default function SortByMenu({
       if (e.key === "Escape") setOpen(false);
     };
 
-    document.addEventListener("click", onDocClick); // <-- CHANGED
+    document.addEventListener("click", onDocClick);
     document.addEventListener("keydown", onKey);
     return () => {
       document.removeEventListener("click", onDocClick);
@@ -115,7 +114,7 @@ export default function SortByMenu({
   const currentPrimary = labelFor(value);
 
   const pick = (k: SortKey) => {
-    onChange(k); // updates parent state
+    onChange(k);
     sessionStorage.setItem("sortKey", k);
     setOpen(false);
   };
@@ -140,8 +139,8 @@ export default function SortByMenu({
       {open && pos
         ? createPortal(
             <div
-              key={value} // keep this - safe rerender
-              ref={menuRef} // NEW: reference the menu
+              key={value}
+              ref={menuRef}
               className="sortby__menu"
               style={{
                 position: "fixed",
@@ -152,7 +151,7 @@ export default function SortByMenu({
               }}
               role="menu"
               aria-label="Sort options"
-              onMouseDown={(e) => e.stopPropagation()} // stop mousedown bubbling
+              onMouseDown={(e) => e.stopPropagation()}
             >
               <div className="sortby__menu-arrow" />
 

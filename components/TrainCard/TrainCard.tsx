@@ -434,7 +434,6 @@ export default function TrainCard({ train }: { train: TrainData }) {
         />
       </div>
 
-      {/* Train Schedule Popup */}
       <TrainSchedulePopup
         isOpen={isScheduleOpen}
         setIsOpen={setIsScheduleOpen}
