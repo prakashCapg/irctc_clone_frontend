@@ -13,6 +13,7 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
+    "types": ["jest"],
     "plugins": [
       {
         "name": "next"
@@ -30,7 +31,8 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts",
-    "app/src/data/stations.js"
+    "app/src/data/stations.js",
+    "app/(public)/train-search/page.test.js"
   ],
   "exclude": ["node_modules"]
 }
