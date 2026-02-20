@@ -1,4 +1,3 @@
-// components/TrainCard/TrainCard.tsx
 "use client";
 
 import { useMemo, useState } from "react";
@@ -6,6 +5,7 @@ import "./TrainCard.css";
 import { Button, Slider } from "react-batch-component-library";
 import Availability, { AvailabilityPick } from "../Availability/Availability";
 import TrainSchedulePopup from "../TrainSchedulePopup/page";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 export type TrainClass = { code: string; label: string };
 export type RunsOnItem = string | { key: string; label: string };
@@ -261,7 +261,7 @@ export default function TrainCard({ train }: { train: TrainData }) {
 
   const runsOnSet = useMemo(
     () => normalizeRunsOnSet(train.runsOn),
-    [train.runsOn]
+    [train.runsOn],
   );
 
   return (
@@ -341,6 +341,7 @@ export default function TrainCard({ train }: { train: TrainData }) {
           pickedByClass={pickedByClass}
           onPick={handlePick}
           onClose={handleCloseAvailability}
+          useApi={false}
         />
       ) : (
         <Slider<TrainClass>
@@ -393,7 +394,15 @@ export default function TrainCard({ train }: { train: TrainData }) {
                     type="button"
                     onClick={() => setOpenClass(cls.code)}
                   >
-                    Refresh ↻
+                    Refresh{" "}
+                    <RefreshIcon
+                      style={{
+                        fontSize: "20px",
+                        top: 2,
+                        position: "relative",
+                        fontWeight: 700,
+                      }}
+                    />
                   </button>
                 )}
               </div>
@@ -425,7 +434,6 @@ export default function TrainCard({ train }: { train: TrainData }) {
         />
       </div>
 
-      {/* Train Schedule Popup */}
       <TrainSchedulePopup
         isOpen={isScheduleOpen}
         setIsOpen={setIsScheduleOpen}

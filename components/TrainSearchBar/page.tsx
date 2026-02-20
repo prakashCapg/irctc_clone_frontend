@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import FromAndToComponent from "@/components/FromandTo/page";
 import {
   Button,
@@ -10,34 +9,40 @@ import {
 } from "react-batch-component-library";
 import { Briefcase } from "react-feather";
 import "./TrainSearchBar.css";
+import { useTrainContext } from "@/app/contexts/TrainContext";
 
 export default function TrainSearchBar() {
-  const router = useRouter();
-  const sp = useSearchParams();
+  const { trainListData, setTrainListData, searchState, setSearchState } =
+    useTrainContext();
 
   const [fromQuery, setFromQuery] = useState("");
   const [toQuery, setToQuery] = useState("");
   const [date, setDate] = useState("");
   const [trainclass, setTrainClass] = useState("all");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setFromQuery(sp.get("from") ?? "");
-    setToQuery(sp.get("to") ?? "");
-    setDate(sp.get("date") ?? "");
-    setTrainClass(sp.get("class") ?? "all");
-  }, [sp]);
+    const hasContext =
+      searchState.fromQuery || searchState.toQuery || searchState.date;
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    if (hasContext) {
+      setFromQuery(searchState.fromQuery ?? "");
+      setToQuery(searchState.toQuery ?? "");
+      setDate(searchState.date ?? "");
+      setTrainClass(searchState.trainclass ?? "all");
+      return;
+    }
 
-    const params = new URLSearchParams();
-    if (fromQuery) params.set("from", fromQuery);
-    if (toQuery) params.set("to", toQuery);
-    if (date) params.set("date", date);
-    if (trainclass !== "all") params.set("class", trainclass);
-
-    router.push(`/train-list?${params.toString()}`);
-  };
+    const cached = sessionStorage.getItem("searchState");
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      setSearchState(parsed);
+      setFromQuery(parsed.fromQuery ?? "");
+      setToQuery(parsed.toQuery ?? "");
+      setDate(parsed.date ?? "");
+      setTrainClass(parsed.trainclass ?? "all");
+    }
+  }, [searchState, setSearchState]);
 
   const classOptions = [
     { label: "All Classes", value: "all" },
@@ -46,6 +51,33 @@ export default function TrainSearchBar() {
     { label: "AC 3 Tier (3A)", value: "AC 3 Tier (3A)" },
     { label: "Sleeper (SL)", value: "Sleeper (SL)" },
   ];
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const payload = { fromQuery, toQuery, date, trainclass };
+
+    try {
+      setSearchState(payload);
+
+      const res = await fetch("/api/TrainSearchApi", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      if (data?.error) return;
+
+      setTrainListData(data.trains);
+
+      sessionStorage.setItem("trainListData", JSON.stringify(data.trains));
+      sessionStorage.setItem("searchState", JSON.stringify(payload));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <form onSubmit={onSubmit} className="compact-searchbar">
@@ -79,7 +111,7 @@ export default function TrainSearchBar() {
 
         <div className="cs-btn">
           <Button
-            label="Modify Search"
+            label={loading ? "Modifying..." : "Modify Search"}
             type="secondary"
             className="modify-btn"
           />
