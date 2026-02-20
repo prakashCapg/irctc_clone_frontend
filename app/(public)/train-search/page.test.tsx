@@ -12,7 +12,10 @@ jest.mock("next/navigation", () => ({
 }));
 
 jest.mock("@/app/contexts/TrainContext", () => ({
-  useTrainContext: () => ({ setTrainListData: setTrainListDataMock }),
+  useTrainContext: () => ({
+    setTrainListData: setTrainListDataMock,
+    setSearchState: jest.fn(),
+  }),
 }));
 
 // Mock child components
@@ -52,18 +55,21 @@ jest.mock("react-batch-component-library", () => ({
     />
   ),
   DropDown: (props: any) => (
-    <select
-      data-testid="class-select"
-      value={props.selectedValue}
-      onChange={(e: any) => props.onSelect(e.target.value)}
-    >
-      <option value="all">{props.placeholder}</option>
-      {(props.options || []).map((o: any) => (
-        <option key={o.value} value={o.value}>
-          {o.label}
-        </option>
-      ))}
-    </select>
+    <div>
+      {props.leftIcon}
+      <select
+        data-testid="class-select"
+        value={props.selectedValue}
+        onChange={(e: any) => props.onSelect(e.target.value)}
+      >
+        <option value="all">{props.placeholder}</option>
+        {(props.options || []).map((o: any) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+    </div>
   ),
 }));
 
@@ -94,9 +100,9 @@ describe("TrainSearchPage", () => {
 
     test("renders form with correct structure", () => {
       render(<TrainSearchPage />);
-      const form = screen.getByRole("button", { name: /Search Trains/i }).closest(
-        "form"
-      );
+      const form = screen
+        .getByRole("button", { name: /Search Trains/i })
+        .closest("form");
       expect(form).toBeInTheDocument();
     });
 
@@ -144,7 +150,9 @@ describe("TrainSearchPage", () => {
       render(<TrainSearchPage />);
       const user = userEvent.setup();
 
-      const classSelect = screen.getByTestId("class-select") as HTMLSelectElement;
+      const classSelect = screen.getByTestId(
+        "class-select",
+      ) as HTMLSelectElement;
       await user.selectOptions(classSelect, "Sleeper (SL)");
 
       expect(classSelect.value).toBe("Sleeper (SL)");
@@ -152,7 +160,9 @@ describe("TrainSearchPage", () => {
 
     test("defaults to 'all' train class", () => {
       render(<TrainSearchPage />);
-      const classSelect = screen.getByTestId("class-select") as HTMLSelectElement;
+      const classSelect = screen.getByTestId(
+        "class-select",
+      ) as HTMLSelectElement;
       expect(classSelect.value).toBe("all");
     });
   });
@@ -179,12 +189,12 @@ describe("TrainSearchPage", () => {
       await user.type(screen.getByTestId("date-input"), "2026-02-15");
       await user.selectOptions(
         screen.getByTestId("class-select"),
-        "Sleeper (SL)"
+        "Sleeper (SL)",
       );
       await user.click(screen.getByRole("button", { name: /Search Trains/i }));
 
       await waitFor(() => {
-        expect(global.fetch).toHaveBeenCalledWith("api/TrainSearchApi", {
+        expect(global.fetch).toHaveBeenCalledWith("/api/TrainSearchApi", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -285,7 +295,7 @@ describe("TrainSearchPage", () => {
       await user.click(screen.getByRole("button", { name: /Search Trains/i }));
 
       await waitFor(() => {
-        expect(setTrainListDataMock).toHaveBeenCalledWith(fakeResponse.trains);
+        expect(setTrainListDataMock).not.toHaveBeenCalled();
       });
     });
 

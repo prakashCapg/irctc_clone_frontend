@@ -5,6 +5,7 @@ module.exports = {
   testMatch: ["**/__tests__/**/*.ts?(x)", "**/?(*.)+(spec|test).ts?(x)"],
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/$1",
+    "\\.(css|less|scss|sass)$": "identity-obj-proxy",
   },
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   transform: {
